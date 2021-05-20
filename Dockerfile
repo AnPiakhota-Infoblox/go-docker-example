@@ -1,20 +1,14 @@
-FROM golang:1.12-alpine as builder
-
-ENV GO111MODULE=on
-
+# build the server binary
+FROM golang:1.16.3 AS builder
 WORKDIR /app
+
 COPY . .
+RUN go build -mod=vendor -o example cmd/example/main.go
 
-RUN apk --no-cache add git alpine-sdk build-base gcc
+# copy the server binary from builder stage; run the server binary
+FROM alpine:latest AS runner
+WORKDIR /bin
 
-RUN go get \
-    && go get golang.org/x/tools/cmd/cover \
-    && go get github.com/mattn/goveralls
-
-RUN go build -o example cmd/example/main.go
-
-FROM alpine:latest
-RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 COPY --from=builder /app/example .
 CMD ["./example"]
