@@ -1,16 +1,19 @@
 package main
 
 import (
+	"io"
 	"log"
-
-	"github.com/fterrag/go-docker-example/user"
-
-	"github.com/fatih/color"
+	"net/http"
 )
 
 func main() {
-	u := user.User{NameFirst: "John", NameLast: "Smith"}
+	fs := http.FileServer(http.Dir("./assets"))
+	http.Handle("/", fs)
 
-	greeting := color.GreenString("Hello %s!\n", u.GetFullName())
-	log.Printf(greeting)
+	http.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
+		io.WriteString(w, "Hello World!\n")
+	})
+
+	log.Println("Starting server on port 8080")
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
