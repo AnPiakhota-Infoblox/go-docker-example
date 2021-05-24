@@ -8,5 +8,5 @@ RUN CGO_ENABLED=0 go build -mod=vendor -o example cmd/example/main.go
 FROM scratch AS runner
 WORKDIR /bin
 COPY --from=builder /app/example .
-COPY --from=builder /app/assets/ ./assets/
+COPY --from=builder /app/assets/ /app/assets/
 CMD ["./example"]

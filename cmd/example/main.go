@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	fs := http.FileServer(http.Dir("./assets"))
+	fs := http.FileServer(http.Dir("/app/assets"))
 	http.Handle("/", fs)
 
 	http.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
